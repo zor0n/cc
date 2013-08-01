@@ -1,49 +1,116 @@
+
 <!DOCTYPE html>
-<html>
-
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="CoinChat Client : Open Source CoinChat client with Extra features!" />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>CoinChat Client</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/zor0n/cc">View on GitHub</a>
-
-          <h1 id="project_title">CoinChat Client</h1>
-          <h2 id="project_tagline">Open Source CoinChat client with Extra features! (and rainbow!)</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/zor0n/cc/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/zor0n/cc/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Under Development</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">CoinChat Client maintained by <a href="https://github.com/zor0n">zor0n</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+<head>
+<title>CoinChat - free bitcoins and chat room</title>
+<link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link href='https://coinchat.org/static/css/default.css' type='text/css' rel='stylesheet'>
+<link rel="icon" type="image/png" href="https://coinchat.org/static/img/chat.png">
+<meta name="description" content="A web chatroom - discuss and chat with a nice stylish functional client. Works everywhere, Bitcoin integrated. Create your own room!"> 
+</head>
+<body>
+	<div class='container'>
+		<div id='changepassmodal' class='modal fade hide'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h3>Change Password</h3>
+			</div>
+			<div class='modal-body'>
+				<p>Change the password for this account</p>
+				<input type='password' id='changepass1' placeholder='New Password'> <br /> <input type='password' id='changepass2' placeholder='Confirm Pass'> <br /> <button id='changepassbtn' class='tenpx btn'>Change Password</button>
+			</div>
+		</div>
+		<div id='dcmodal' class='modal fade hide'>
+			<div class='modal-body'>
+				<h3>Disconnected due to inactivity</h3>
+				<p>Refresh the page or click on the green button to reconnect</p>
+				<a href='/' class='btn btn-success btn-large' style='width: 90%; display: inline-block'>Reconnect</a>
+			</div>
+		</div>
+		<div id='messages'>
+		
+		</div>
+		<div id='withdrawmodal' class='modal hide fade'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h3>Withdraw</h3>
+			</div>
+			<div class='modal-body'>
+				<p>We use <a href='https://inputs.io' target='_blank'>Inputs.io</a> for instant payments processing. You'll need to get a wallet with Inputs if you don't have one.</p>
+				<p>The more mBTC you withdraw, the less fees there are! The min withdraw is 5 mBTC</p>
+				<input class='span2' type='text' id='withdrawbtc' placeholder='Withdraw mBTC'> will net <input type='text' class='span2' id='withdrawnet' placeholder='mBTC' readonly> to <input type='text' id='withdrawaddress' placeholder='Your Inputs.io email'> <button id='withdrawbtn' class='btn tenpx'>Withdraw</button>
+			</div>
+		</div>
+		<div class='modal hide fade' id='welcomemodal'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h3>Welcome!</h3>
+			</div>
+			<div class='modal-body'>
+				<p><strong>Hello, and welcome to CoinChat! Here's some things you'll need to know:</strong></p>
+				<p>We're a <strong>chatroom</strong> and <strong>community</strong> front and center. The rewards are a <strong>bonus</strong>.</p>
+				<p>You must be promoted to earn rewards when you say something. To get promoted, have productive conversations with a <strong>high school reading level</strong>. Don't ask.</p>
+				<p>Saying too many short, low quality, text speak (eg 'u r banned'), spammy messages in #main will get you muted</p>
+				<p>Don't forget that the chat has <strong>multiple</strong> rooms and you can <strong>PM</strong> users. Click on the <strong>+ NEW</strong> link at the top left.</p>
+				<button class='btn btn-success btn-large' style='width: 100%' onclick='$("#welcomemodal").modal("hide")'>Okay</button>
+			</div>
+		</div>
+		<div id='stylemodal' class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Style Chat</h3>
+			</div>
+			<div class="modal-body">
+				<p>Purchase colors to style your chat!</p>
+				<input type='text' id='colorhex' value='090'> which is <span id='colordemo' style='color: #090; font-weight: bold'>this color.</span>
+				<span class='btn btn-primary' id='buycolor'>Purchase color (20 mBTC)</span>
+				<p>Your colors:</p>
+				<div id='mycolors'>
+				</div>
+			</div>
+		</div>		
+		<div id='chat'>
+			<div class='header'>
+				<div style='margin-top: 4px; margin-left: 5px;' class='hide-guest'>
+					Hi <span id='username'>..</span>! Balance: <span class='badge badge-warning'><span id='balance'>..</span> mBTC</span> <span id='update'></span> - Your reviewed referrals: <span id='myreferrals'></span>
+					 - give this link: <strong id='referrallink'>http://coinchat.org/</strong> -  <a href='https://bitcointalk.org/index.php?topic=247445.0' target='_blank'>See our contest for more info</a>
+					 <div class='pull-right' style='margin-right: 5px'>
+						 <button id='enableNotification' class='btn btn-success hide'>Show Notifications</button>
+ 						 <a id='deposit' target='_blank'  class='inputsio-alt btn btn-primary'>Deposit</a> 
+						<button class='btn btn-primary' id='withdrawmodalbtn'>Withdraw</button> 
+						<button class='btn btn-primary' id='changepassmodalbtn'>Change pass</button>
+						<button class='btn btn-primary' id='logoutbtn'>Log out</button>
+					</div>
+				 </div>
+			 	<div style='margin-top: 4px; margin-left: 5px' class='hidden-user'>
+					<strong>CoinChat v2</strong> - Chat from any browser! Integrated with Bitcoin - get free mBTC for just chatting! (You should really sign up)
+				</div>		
+			</div>
+			<div class='content'>
+				<div id='chatleft'>
+					<div class='rooms'></div>
+					<span id='online' class='muted pull-right' style='position: relative; right: 50px'></span>	
+					<!--<span id='cat' class='visible-desktop' style='float: right'></span>-->
+				</div>
+				<div id='chattext'>
+				
+				</div>
+				<div id='chatsidebar'>
+				
+				</div>
+			</div>
+			<div class='input'>
+				<span class='btn tenpx' id='style'>Color</span>
+				<span class='btn tenpx smileypopover' id='smiley'><i class='smiley smile'></i></span>
+				<input type='text' spellcheck="true" class='input-block-level' id='chatinput' maxlength='500' placeholder='Chat here..'>
+				<span class='btn btn-primary tenpx' id='send'>Send Message</span>
+			</div>
+		</div>		
+	</div>
+	<audio id="beep" src="https://coinchat.org/static/beep.wav" preload="auto"></audio>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+<script src='https://coinchat.org/socket.io/socket.io.js' type='text/javascript'></script>
+<script src='scripts.js' type='text/javascript'></script>
+<script src='https://inputs.io/js/buttons.js'></script>
+</body>
 </html>
